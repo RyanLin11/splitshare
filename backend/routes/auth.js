@@ -3,11 +3,7 @@ const router = express.Router();
 const UserController = require('../controllers/UserController');
 const { isAuthenticated } = require('../utils/auth');
 
-router.route('/')
-.get(isAuthenticated, UserController.getUsers)
-.post(UserController.createUser);
-
-router.route('/:id')
-.get(isAuthenticated, UserController.getUser);
+router.post('/login', UserController.login);
+router.get('/logout', isAuthenticated, UserController.logout);
 
 module.exports = router;
