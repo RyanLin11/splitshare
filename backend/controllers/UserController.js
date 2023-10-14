@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const User = require('../models/users');
