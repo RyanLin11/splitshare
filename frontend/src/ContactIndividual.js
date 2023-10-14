@@ -16,6 +16,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PeopleIcon from '@mui/icons-material/People';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Link } from "react-router-dom"; 
 
 export default function ContactIndividual({ contactName = 'Generic Contact'}) {
   return (
@@ -75,30 +76,34 @@ export default function ContactIndividual({ contactName = 'Generic Contact'}) {
 
         <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
             <Toolbar>
-                <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ mr: 0 }}
-                >
-                    <PeopleIcon/>
-                    <div>Contacts</div>
+                <Link to="/contacts">
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 0 }}
+                        >
+                        <PeopleIcon/>
+                        <div>Contacts</div>
 
-                </IconButton>
+                    </IconButton>
+                </Link>
                 <Box sx={{ flexGrow: 1 }} />
-                <IconButton
-                    size="large"
-                    edge="end"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ mr: 0 }}
-                    >
-                    <div>Events</div>
-                    <EventNoteIcon/>
-                </IconButton>
+                <Link to="/events">
+                    <IconButton
+                        size="large"
+                        edge="end"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 0 }}
+                        >
+                        <div>Events</div>
+                        <EventNoteIcon/>
+                    </IconButton>
+                </Link>
             </Toolbar>
-      </AppBar>
+        </AppBar>
     </div>
   );
 }

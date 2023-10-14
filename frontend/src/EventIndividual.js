@@ -19,6 +19,7 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
 import AddItems from './AddItems';
+import { Link } from "react-router-dom"; 
 
 export default function EventIndividual() {
   return (
@@ -26,8 +27,10 @@ export default function EventIndividual() {
         <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
             <Toolbar>
-            <ArrowBackIcon/>
-            <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
+            <Link to = "/events">
+                <ArrowBackIcon/>
+            </Link>
+            <Typography variant="h4" component="div" sx={{ flexGrow: 1, textAlign: 'center'}}>
                 Events
             </Typography>
             <AddItems/>
@@ -64,33 +67,36 @@ export default function EventIndividual() {
                 />
             </ListItem>
         </List>
-
         <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
             <Toolbar>
-                <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ mr: 0 }}
-                >
-                    <PeopleIcon/>
-                    <div>Contacts</div>
+                <Link to="/contacts">
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 0 }}
+                        >
+                        <PeopleIcon/>
+                        <div>Contacts</div>
 
-                </IconButton>
+                    </IconButton>
+                </Link>
                 <Box sx={{ flexGrow: 1 }} />
-                <IconButton
-                    size="large"
-                    edge="end"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ mr: 0 }}
-                    >
-                    <div>Events</div>
-                    <EventNoteIcon/>
-                </IconButton>
+                <Link to="/events">
+                    <IconButton
+                        size="large"
+                        edge="end"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 0 }}
+                        >
+                        <div>Events</div>
+                        <EventNoteIcon/>
+                    </IconButton>
+                </Link>
             </Toolbar>
-      </AppBar>
+        </AppBar>
     </div>
   );
 }
