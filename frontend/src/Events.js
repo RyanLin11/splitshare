@@ -1,22 +1,22 @@
 import * as React from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import { ListItemButton } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import AddContacts from './AddContacts';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import PeopleIcon from '@mui/icons-material/People';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
+import {
+    AppBar,
+    Box,
+    Divider,
+    IconButton,
+    List,
+    ListItem,
+    ListItemText,
+    Toolbar,
+    Typography
+} from '@mui/material';
+
+import {
+    EventNote as EventNoteIcon,
+    People as PeopleIcon
+} from '@mui/icons-material';
+
 import AddEvents from './AddEvents';
 import { Link } from "react-router-dom"; 
 
