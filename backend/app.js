@@ -36,8 +36,10 @@ const authRouter = require('./routes/auth');
 const eventsRouter = require('./routes/events');
 const itemsRouter = require('./routes/items');
 const usersRouter = require('./routes/users');
+const contactsRouter = require('./routes/contacts');
 
 app.use('/auth', authRouter);
+app.use('/contacts', contactsRouter);
 app.use('/events', eventsRouter);
 app.use('/items', itemsRouter);
 app.use('/users', usersRouter);

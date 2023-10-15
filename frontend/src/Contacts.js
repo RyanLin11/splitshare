@@ -47,12 +47,12 @@ export default function Contacts() {
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 { contacts.map(contact => 
                     <div>
-                        <ListItemButton id={contact.id} alignItems="flex-start" sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                        <ListItemButton to={`./contacts/${contact.id}`} id={contact.id} alignItems="flex-start" sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                             <ListItemAvatar sx={{marginTop: 0}}>
-                                <Avatar alt={contact.name} src="/static/images/avatar/2.jpg" />
+                                <Avatar alt={contact.alias} src="/static/images/avatar/2.jpg" />
                             </ListItemAvatar>
                             <ListItemText
-                                primary={contact.name}
+                                primary={contact.alias}
                             />
                             <ListItemText sx={{textAlign:'right', paddingRight:'10px'}}>${Math.round((contact.payable - contact.receivable) * 100) / 100}</ListItemText>
                         </ListItemButton>

@@ -7,9 +7,6 @@ import Typography from '@mui/material/Typography';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import PeopleIcon from '@mui/icons-material/People';
-import EventNoteIcon from '@mui/icons-material/EventNote';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddItems from './AddItems';
 import { Link } from "react-router-dom"; 
@@ -20,7 +17,7 @@ export default function Event() {
         <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
             <Toolbar>
-            <Link to = "/events">
+            <Link to = "/events" style={{textDecoration:"none", color: 'inherit'}}>
                 <ArrowBackIcon/>
             </Link>
             <Typography variant="h4" component="div" sx={{ flexGrow: 1, textAlign: 'center'}}>

@@ -1,19 +1,21 @@
 import axios from './BaseService';
 
 export const getContacts = async () => {
-    //let contacts = await axios.get('/contacts');
-    let contacts = [ { id: 'a2u3445', name: 'Edward', payable: 5.23, receivable: 2.34 }];
-    return contacts;
+    let contacts = await axios.get('/contacts');
+    console.log(contacts);
+    //let contacts = [ { id: 'a2u3445', name: 'Edward', payable: 5.23, receivable: 2.34 }];
+    return contacts.data;
 };
 
 export const addContact = async (email, alias) => {
     let contactUser;
     try {
-        contactUser = await axios.get(`/contacts?email=${email}`);
+        contactUser = await axios.get(`/users?email=${email}`);
     } catch (e) {
-        throw Error('not found');
+        throw Error(e.message);
     }
-    let newContact = await axios.post('/contacts', { contactId: contactUser._id, alias });
+    console.log(contactUser.data[0]._id);
+    let newContact = await axios.post('/contacts', { contactId: contactUser.data[0]._id, alias });
     return newContact.data;
 };
 
