@@ -1,15 +1,34 @@
-import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import AddIcon from '@mui/icons-material/Add';
-import TextField from '@mui/material/TextField';
+import { useState, useEffect } from 'react';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  TextField
+} from '@mui/material';
+import {
+  Add as AddIcon,
+} from '@mui/icons-material';
+import { getContacts } from './services/ContactService';
 
-const AddItems = () => {
+export default function AddItems() {
   const [openDialog, setOpenDialog] = useState(false);
+  const [contacts, setContacts] = useState([]);
+
+  async function handleSubmit() {
+    // add the item to the server
+    handleCloseDialog();
+  }
+
+  useEffect(() => {
+    async function getData() {
+      const contactsData = await getContacts();
+      setContacts(contactsData);
+    }
+    getData();
+  }, []);
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -31,10 +50,9 @@ const AddItems = () => {
       >
           <AddIcon />
       </IconButton>
-      {/* Add your contact list here */}
-      
+
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Add New Contact</DialogTitle>
+        <DialogTitle>Add Item</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -58,12 +76,13 @@ const AddItems = () => {
             type="text"
             fullWidth
           />
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleCloseDialog} color="primary">
+          <Button onClick={handleSubmit} color="primary">
             Save
           </Button>
         </DialogActions>
@@ -71,5 +90,3 @@ const AddItems = () => {
     </div>
   );
 };
-
-export default AddItems;

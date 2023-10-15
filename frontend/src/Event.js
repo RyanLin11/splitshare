@@ -3,25 +3,18 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import { ListItemButton } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import AddContacts from './AddContacts';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PeopleIcon from '@mui/icons-material/People';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import AddIcon from '@mui/icons-material/Add';
 import AddItems from './AddItems';
 import { Link } from "react-router-dom"; 
 
-export default function EventIndividual() {
+export default function Event() {
   return (
     <div>
         <Box sx={{ flexGrow: 1 }}>
@@ -67,36 +60,6 @@ export default function EventIndividual() {
                 />
             </ListItem>
         </List>
-        <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
-            <Toolbar>
-                <Link to="/contacts">
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 0 }}
-                        >
-                        <PeopleIcon/>
-                        <div>Contacts</div>
-
-                    </IconButton>
-                </Link>
-                <Box sx={{ flexGrow: 1 }} />
-                <Link to="/events">
-                    <IconButton
-                        size="large"
-                        edge="end"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 0 }}
-                        >
-                        <div>Events</div>
-                        <EventNoteIcon/>
-                    </IconButton>
-                </Link>
-            </Toolbar>
-        </AppBar>
     </div>
   );
 }

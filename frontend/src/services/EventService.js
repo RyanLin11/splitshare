@@ -6,7 +6,7 @@ export const getEvents = async () => {
 };
 
 export const addEvent = async (name) => {
-    let newEvent = await axios.post('/events', { body: {name} });
+    let newEvent = await axios.post('/events', { name });
     return newEvent.data;
 };
 
@@ -16,7 +16,7 @@ export const getEvent = async (id) => {
 };
 
 export const editEvent = async (id, name) => {
-    let event = await axios.put(`/events/${id}`, { body: {name} });
+    let event = await axios.put(`/events/${id}`, { name });
     return event.data;
 };
 

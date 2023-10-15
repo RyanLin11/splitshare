@@ -11,21 +11,18 @@ import {
 } from '@mui/material';
 import {
     ArrowBack as ArrowBackIcon,
-    EventNote as EventNoteIcon,
-    People as PeopleIcon
 } from '@mui/icons-material'
 import {
-    Link, 
     useParams 
 } from "react-router-dom";
 import { 
-    useState, 
+    useState,
     useEffect, 
     Fragment 
 } from 'react';
 import { getContact } from './services/ContactService';
 
-export default function ContactIndividual() {
+export default function Contact() {
     const params = useParams();
     let [contact, setContact] = useState();
 
@@ -81,37 +78,6 @@ export default function ContactIndividual() {
                     />
                 </ListItem>
             </List>
-
-            <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
-                <Toolbar>
-                    <Link to="/contacts">
-                        <IconButton
-                            size="large"
-                            edge="start"
-                            color="inherit"
-                            aria-label="menu"
-                            sx={{ mr: 0 }}
-                            >
-                            <PeopleIcon/>
-                            <div>Contacts</div>
-
-                        </IconButton>
-                    </Link>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Link to="/events">
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            color="inherit"
-                            aria-label="menu"
-                            sx={{ mr: 0 }}
-                            >
-                            <div>Events</div>
-                            <EventNoteIcon/>
-                        </IconButton>
-                    </Link>
-                </Toolbar>
-            </AppBar>
         </div>
     );
 }

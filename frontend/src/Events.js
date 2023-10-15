@@ -1,103 +1,73 @@
-import * as React from 'react';
-
 import {
     AppBar,
     Box,
     Divider,
-    IconButton,
     List,
     ListItem,
     ListItemText,
+    ListItemButton,
     Toolbar,
     Typography
 } from '@mui/material';
 
-import {
-    EventNote as EventNoteIcon,
-    People as PeopleIcon
-} from '@mui/icons-material';
-
 import AddEvents from './AddEvents';
-import { Link } from "react-router-dom"; 
+import { Fragment, useState , useEffect } from 'react';
+import { getEvents } from './services/EventService';
 
 export default function Events() {
-  return (
-    <div>
-        <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-            <Toolbar>
-            <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
-                Events
-            </Typography>
-            <AddEvents/>
-            </Toolbar>
-        </AppBar>
-        </Box>
-        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-            <ListItem alignItems="flex-start">
-                <ListItemText
-                primary="Brunch this weekend?"
-                />
-            </ListItem>
-            <Divider variant="middle" component="li" />
-            <ListItem alignItems="flex-start">
-                <ListItemText
-                primary="Summer BBQ"
-                />
-            </ListItem>
-            <Divider variant="middle" component="li" />
-            <ListItem alignItems="flex-start">
-                <ListItemText primary="Oui Oui"/>
-            </ListItem>
-            <Divider variant="middle" component="li" />
-            <ListItem alignItems="flex-start">
-                <ListItemText
-                primary={
-                    <React.Fragment>
-                    <Typography
-                        sx={{ display: 'inline' }}
-                        component="span"
-                        variant="h5"
-                        color="text.primary"
-                    >
-                        Total
+    const [ events, setEvents ] = useState([]);
+
+    useEffect(() => {
+        async function getData() {
+            let eventsData = await getEvents();
+            setEvents(eventsData);
+        }
+        getData();
+    }, []);
+
+    
+    return (
+        <div>
+            <Box sx={{ flexGrow: 1 }}>
+                <AppBar position="static">
+                    <Toolbar sx={{padding: 2}}>
+                    <Typography variant="h4" component="div" sx={{ flexGrow: 1}}>
+                        Events
                     </Typography>
-                    </React.Fragment>
-                }
-                />
-            </ListItem>
-        </List>
-
-        <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
-            <Toolbar>
-                <Link to="/contacts">
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 0 }}
+                    <AddEvents />
+                    </Toolbar>
+                </AppBar>
+            </Box>
+            <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+                { events.map(event => 
+                    <div>
+                        <ListItemButton to={`./events/${event._id}`} id={event.id} alignItems="flex-start" sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            <ListItemText
+                            primary={event.name}
+                            />
+                            <ListItemText sx={{textAlign:'right', paddingRight:'10px'}}>${Math.round((10) * 100) / 100}</ListItemText>
+                        </ListItemButton>
+                        <Divider variant="middle" component="li" />
+                    </div>
+                ) }
+                <ListItem alignItems="flex-start">
+                    <ListItemText
+                    primary={
+                        <Fragment>
+                        <Typography
+                            sx={{ display: 'inline' }}
+                            component="span"
+                            variant="h5"
+                            color="text.primary"
                         >
-                        <PeopleIcon/>
-                        <div>Contacts</div>
-
-                    </IconButton>
-                </Link>
-                <Box sx={{ flexGrow: 1 }} />
-                <Link to="/events">
-                    <IconButton
-                        size="large"
-                        edge="end"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 0 }}
-                        >
-                        <div>Events</div>
-                        <EventNoteIcon/>
-                    </IconButton>
-                </Link>
-            </Toolbar>
-      </AppBar>
-    </div>
-  );
+                            Total
+                        </Typography>
+                        </Fragment>
+                    }
+                    />
+                    <ListItemText sx={{textAlign:'right', paddingRight:'10px'}}>${Math.round((10.606) * 100) / 100}</ListItemText>
+                </ListItem>
+            </List>
+        </div>
+    );
 }

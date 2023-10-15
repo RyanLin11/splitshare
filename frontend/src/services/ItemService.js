@@ -6,7 +6,7 @@ export const getItems = async () => {
 };
 
 export const addItem = async (name, cost, eventId) => {
-    let item = await axios.post('/items', { body: {name, cost, eventId}});
+    let item = await axios.post('/items', { name, cost, eventId });
     return item.data;
 };
 
@@ -16,7 +16,7 @@ export const getItem = async (id) => {
 };
 
 export const editItem = async (id, updates) => {
-    let editUser = await axios.put(`/items/${id}`, {body: updates} );
+    let editUser = await axios.put(`/items/${id}`, updates );
     return editUser.data;
 };
 

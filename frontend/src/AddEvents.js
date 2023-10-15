@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import AddIcon from '@mui/icons-material/Add';
-import TextField from '@mui/material/TextField';
+import { useState } from 'react';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  TextField
+} from '@mui/material';
+import {
+  Add as AddIcon
+} from '@mui/icons-material';
+import { addEvent } from './services/EventService';
 
-const AddEvents = () => {
+export default function AddEvents() {
   const [openDialog, setOpenDialog] = useState(false);
+  const [name, setName] = useState("");
+
+  async function handleSubmit(e) {
+    let event = await addEvent(name);
+    console.log(event);
+    handleCloseDialog();
+  }
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -31,8 +43,6 @@ const AddEvents = () => {
       >
           <AddIcon/>
       </IconButton>
-      {/* Add your contact list here */}
-      
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Add New Event</DialogTitle>
         <DialogContent>
@@ -43,13 +53,15 @@ const AddEvents = () => {
             label="Event Name"
             type="text"
             fullWidth
+            value={name}
+            onChange={e => setName(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleCloseDialog} color="primary">
+          <Button onClick={handleSubmit} color="primary">
             Save
           </Button>
         </DialogActions>
@@ -57,5 +69,3 @@ const AddEvents = () => {
     </div>
   );
 };
-
-export default AddEvents;

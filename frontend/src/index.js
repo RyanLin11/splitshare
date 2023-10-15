@@ -6,27 +6,29 @@ import reportWebVitals from './reportWebVitals';
 import Login from './Login';
 import RequireAuth from './auth/RequireAuth';
 import Contacts from './Contacts';
-import ContactIndividual from './ContactIndividual';
+import Contact from './Contact';
 import Events from './Events';
-import EventIndividual from './EventIndividual';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import logo from './logo.svg';
-import { Outlet } from 'react-router-dom';
+import Event from './Event';
+import Register from './Register';
+import { BrowserRouter as Router, Route, Routes, Outlet } from 'react-router-dom';
+import { AuthProvider } from './auth/AuthProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<App />}>
+        <Route path="/" element={<AuthProvider><App /></AuthProvider>}>
           <Route path="/login" element={<Login/>}/>
+          <Route path="/register" element={<Register/>} />
+
           <Route path="/contacts" element={<div><RequireAuth><Outlet /></RequireAuth></div>}>
             <Route index element={<Contacts />} />
-            <Route path=":contactId" element={<ContactIndividual />} />
+            <Route path=":contactId" element={<Contact />} />
           </Route>
           <Route path="/events" element={<div><RequireAuth><Outlet /></RequireAuth></div>}>
               <Route index element={<Events />} />
-              <Route path=":eventId" element={<EventIndividual />} />
+              <Route path=":eventId" element={<Event />} />
           </Route>
         </Route>
       </Routes>

@@ -1,11 +1,8 @@
-import * as React from 'react';
-
 import {
     AppBar,
     Avatar,
     Box,
     Divider,
-    IconButton,
     List,
     ListItem,
     ListItemAvatar,
@@ -15,24 +12,21 @@ import {
     Typography,
 } from '@mui/material';
 
-import {
-    EventNote as EventNoteIcon,
-    People as PeopleIcon,
-} from '@mui/icons-material';
-
 import AddContacts from './AddContacts';
-
-import { Link } from "react-router-dom"; 
 import { getContacts } from './services/ContactService';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 
 export default function Contacts() {
     
     const [ contacts, setContacts ] = useState([]);
-
+    let totalAmount = 0;
+    
     useEffect(() => {
         async function getData() {
             let contactsData = await getContacts();
+            for(let i in contactsData){
+                totalAmount += contactsData[i].receivable - contactsData[i].payable;
+            }
             setContacts(contactsData);
         }
         getData();
@@ -42,8 +36,8 @@ export default function Contacts() {
         <div>
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
-                    <Toolbar>
-                    <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
+                    <Toolbar sx={{padding: 2}}>
+                    <Typography variant="h4" component="div" sx={{ flexGrow: 1}}>
                         Contacts
                     </Typography>
                     <AddContacts />
@@ -53,21 +47,22 @@ export default function Contacts() {
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 { contacts.map(contact => 
                     <div>
-                        <ListItemButton alignItems="flex-start">
-                            <ListItemAvatar>
-                            <Avatar alt={contact.name} src="/static/images/avatar/2.jpg" />
+                        <ListItemButton id={contact.id} alignItems="flex-start" sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            <ListItemAvatar sx={{marginTop: 0}}>
+                                <Avatar alt={contact.name} src="/static/images/avatar/2.jpg" />
                             </ListItemAvatar>
                             <ListItemText
-                            primary={contact.name}
+                                primary={contact.name}
                             />
+                            <ListItemText sx={{textAlign:'right', paddingRight:'10px'}}>${Math.round((contact.payable - contact.receivable) * 100) / 100}</ListItemText>
                         </ListItemButton>
-                        <Divider variant="inset" component="li" />
+                        <Divider variant="middle" component="li" />
                     </div>
                 ) }
-                <ListItem alignItems="flex-start">
+                <ListItem alignItems="flex-start" sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                     <ListItemText
                     primary={
-                        <React.Fragment>
+                        <Fragment>
                         <Typography
                             sx={{ display: 'inline' }}
                             component="span"
@@ -76,41 +71,12 @@ export default function Contacts() {
                         >
                             Total
                         </Typography>
-                        </React.Fragment>
+                        </Fragment>
                     }
                     />
+                    <ListItemText sx={{textAlign:'right', paddingRight:'10px'}}>${Math.round((totalAmount) * 100) / 100}</ListItemText>
                 </ListItem>
             </List>
-            <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
-                <Toolbar>
-                    <Link to="/contacts">
-                        <IconButton
-                            size="large"
-                            edge="start"
-                            color="inherit"
-                            aria-label="menu"
-                            sx={{ mr: 0 }}
-                            >
-                            <PeopleIcon/>
-                            <div>Contacts</div>
-
-                        </IconButton>
-                    </Link>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Link to="/events">
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            color="inherit"
-                            aria-label="menu"
-                            sx={{ mr: 0 }}
-                            >
-                            <div>Events</div>
-                            <EventNoteIcon/>
-                        </IconButton>
-                    </Link>
-                </Toolbar>
-            </AppBar>
         </div>
     );
 }
