@@ -131,14 +131,94 @@ class ContactController {
     }
 
     static async CreateContact(req, res, next) {
-        let contact = new Contact({ ...req.body, userId: req.session.user });
-        await contact.save();
-        res.send(contact);
+        try {
+            let contact = new Contact({ ...req.body, userId: req.session.user });
+            await contact.save();
+            res.send(contact);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    // gets map of item names and amounts owed by personOwed to personOwing
+    static async getListOwed(personOwing, personOwed) {
+      // SELECT Items.name, SUM(Payables.fraction * Items.cost)
+      // FROM Payables
+      // WHERE Payables.payee = <personOwing>
+      // INNER JOIN Items ON Payables.itemId = Items._id
+      // INNER JOIN Events ON Items.eventId = Events._id
+      // WHERE Events.owner = <personOwed>
+      // GROUP BY Items._id
+      return PayableModel.aggregate([
+        {
+          $match: {
+            payeeId: personOwing,
+          },
+        },
+        {
+          $lookup: {
+            from: 'items',
+            localField: 'itemId',
+            foreignField: '_id',
+            as: 'item',
+          },
+        },
+        {
+          $unwind: '$item',
+        },
+        {
+          $lookup: {
+            from: 'events',
+            localField: 'item.eventId',
+            foreignField: '_id',
+            as: 'event',
+          },
+        },
+        {
+          $unwind: '$event',
+        },
+        {
+          $match: {
+            'event.owner': personOwed,
+          },
+        },
+        {
+          $group: {
+            _id: '$item._id', // Group by item's ID
+            totalCost: {
+              $sum: {
+                $multiply: ['$fraction', '$item.cost'],
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0, // Exclude _id from the result
+            name: '$item.name', // Assuming the Item model has a 'name' field
+            totalCost: 1,
+          },
+        },
+      ]);
     }
 
     static async GetContact(req, res, next) {
-        let contact = await Contact.findById(req.params.id);
-        res.send(contact);
+        try {
+            let contact = await Contact.findById(req.params.id);
+            // get the stuff that this guy owes us
+            let otherPersonOwes = await this.getListOwed(req.params.id, req.session.user);
+            // get the stuff that we owe this guy
+            let weOweToThisGuy = await this.getListOwed(req.session.user, req.params.id);
+            let response = {
+                _id: contact._id,
+                name: contact.name,
+                receivables: otherPersonOwes,
+                payables: weOweToThisGuy
+            };
+            res.send(response);
+        } catch (err) {
+            next(err);
+        }
     }
 
     static async EditContact(req, res, next) {
