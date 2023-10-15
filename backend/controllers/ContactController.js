@@ -3,131 +3,133 @@ const Payable = require('../models/payables');
 
 class ContactController {
     static async GetContacts(req, res, next) {
-        let owedByContacts = await Payable.aggregate([
-            {
-              $match: {
-                'eventId.owner': req.session.user,
-              },
-            },
-            {
-              $lookup: {
-                from: 'items',
-                localField: 'itemId',
-                foreignField: '_id',
-                as: 'item',
-              },
-            },
-            {
-              $unwind: '$item',
-            },
-            {
-              $lookup: {
-                from: 'users',
-                localField: 'payeeId',
-                foreignField: '_id',
-                as: 'user',
-              },
-            },
-            {
-              $unwind: '$user',
-            },
-            {
-              $group: {
-                _id: '$user._id', // Group by user ID
-                totalCost: {
-                  $sum: {
-                    $multiply: ['$fraction', '$item.cost'],
-                  },
+        try {
+            let contacts = await Contact.find({ userId: req.session.user });
+            let contactsById = {};
+            contacts.forEach(contact => {
+                contactsById[contact._id] = {
+                    id: contact._id,
+                    alias: contact.alias,
+                    userId: contact.userId,
+                    contactId: contact.contactId,
+                    receivable: 0,
+                    payable: 0
+                };
+            });
+            let owedByContacts = await Payable.aggregate([
+                {
+                    $match: {
+                        'eventId.owner': req.session.user,
+                    },
                 },
-              },
-            },
-            {
-              $project: {
-                _id: 1,
-                name: '$contacts.alias',
-                totalCost: 1,
-              },
-            },
-        ]);
-    
-        let owingToContacts = await Payable.aggregate([
-            {
-              $match: {
-                payeeId: req.session.user, // Assuming you have access to the current user's ID
-              },
-            },
-            {
-              $lookup: {
-                from: 'items',
-                localField: 'itemId',
-                foreignField: '_id',
-                as: 'item',
-              },
-            },
-            {
-              $unwind: '$item',
-            },
-            {
-              $lookup: {
-                from: 'events',
-                localField: 'item.eventId',
-                foreignField: '_id',
-                as: 'event',
-              },
-            },
-            {
-              $unwind: '$event',
-            },
-            {
-              $lookup: {
-                from: 'users',
-                localField: 'event.owner',
-                foreignField: '_id',
-                as: 'user',
-              },
-            },
-            {
-              $unwind: '$user',
-            },
-            {
-              $group: {
-                _id: '$user._id', // Group by user ID
-                totalCost: {
-                  $sum: {
-                    $multiply: ['$fraction', '$item.cost'],
-                  },
+                {
+                    $lookup: {
+                        from: 'items',
+                        localField: 'itemId',
+                        foreignField: '_id',
+                        as: 'item',
+                    },
                 },
-              },
-            },
-            {
-              $project: {
-                _id: 1, // Include the user's ID in the result
-                name: '$contacts.alias',
-                totalCost: 1,
-              },
-            },
-        ]);
-        // merge contacts
-        let contactsById = {};
-        for (let { id, name, totalCost } in owedByContacts) {
-            contactsById[id].name = name;
-            contactsById[id].receivable = totalCost;
-            contactsById[id].payable = 0;
+                {
+                    $unwind: '$item',
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'payeeId',
+                        foreignField: '_id',
+                        as: 'user',
+                    },
+                },
+                {
+                    $unwind: '$user',
+                },
+                {
+                    $group: {
+                        _id: '$user._id', // Group by user ID
+                        totalCost: {
+                        $sum: {
+                            $multiply: ['$fraction', '$item.cost'],
+                        },
+                        },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: '$contacts.alias',
+                        totalCost: 1,
+                    },
+                },
+            ]);
+            let owingToContacts = await Payable.aggregate([
+                {
+                    $match: {
+                        payeeId: req.session.user,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'items',
+                        localField: 'itemId',
+                        foreignField: '_id',
+                        as: 'item',
+                    },
+                },
+                {
+                    $unwind: '$item',
+                },
+                {
+                    $lookup: {
+                        from: 'events',
+                        localField: 'item.eventId',
+                        foreignField: '_id',
+                        as: 'event',
+                    },
+                },
+                {
+                    $unwind: '$event',
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'event.owner',
+                        foreignField: '_id',
+                        as: 'user',
+                    },
+                },
+                {
+                    $unwind: '$user',
+                },
+                {
+                    $group: {
+                        _id: '$user._id', // Group by user ID
+                        totalCost: {
+                        $sum: {
+                            $multiply: ['$fraction', '$item.cost'],
+                        },
+                        },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: '$contacts.alias',
+                        totalCost: 1,
+                    },
+                },
+            ]);
+            owedByContacts.map(({ id, totalCost }) => {
+                contactsById[id].payable = totalCost;
+            });
+            owingToContacts.map(({ id, totalCost }) => {
+                contactsById[id].receivable = totalCost;
+            });
+            let response = Object.entries(contactsById).map(([ userId, info ]) => ({ userId, ...info }));
+            res.send(response);
+        } catch (e) {
+            next(e);
         }
-        for (let { id, name, totalCost } in owingToContacts) {
-            if (!(id in contacts)) {
-                contactsById[id].name = name;
-                contactsById[id].receivable = 0;
-            }
-            contactsById[id].payable = totalCost;
-        }
-    
-        let contacts = [];
-        for (const [userId, info] of map) {
-            contacts.push({ userId, ...info });
-        }
-        
-        res.send(contacts);
     }
 
     static async CreateContact(req, res, next) {

@@ -5,8 +5,8 @@ export const getItems = async () => {
     return items.data;
 };
 
-export const addItem = async (name, cost, eventId) => {
-    let item = await axios.post('/items', { name, cost, eventId });
+export const addItem = async (name, cost, eventId, payables) => {
+    let item = await axios.post('/items', { name, cost, eventId, payables });
     return item.data;
 };
 

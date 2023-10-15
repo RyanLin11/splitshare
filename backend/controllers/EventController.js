@@ -1,4 +1,5 @@
 const Event = require('../models/events');
+const Item = require('../models/items');
 
 class EventController {
     static async getEvents(req, res, next) {
@@ -27,7 +28,55 @@ class EventController {
     static async getEvent(req, res, next) {
         try {
             let event = await Event.findById(req.params.id);
-            res.send(event);
+            const additionalInfo = await Item.aggregate([
+                {
+                    $lookup: {
+                        from: 'payables',
+                        localField: '_id',
+                        foreignField: 'itemId',
+                        as: 'payables',
+                    },
+                },
+                {
+                    $unwind: '$payables',
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'payables.payeeId',
+                        foreignField: '_id',
+                        as: 'user',
+                    },
+                },
+                {
+                    $unwind: '$user',
+                },
+                {
+                    $project: {
+                        _id: 1, // Include item's ID in the result
+                        name: 1, // Include item's name in the result
+                        cost: 1, // Include item's cost in the result
+                        email: '$user.email',
+                    },
+                },
+            ]);
+            console.log(additionalInfo);
+            let itemMap = {};
+            let items = additionalInfo.forEach(({ _id, name, cost, email }) => {
+                if (!(_id in itemMap)) {
+                    itemMap[_id] = {
+                        name,
+                        cost,
+                        payees: []
+                    }
+                }
+                itemMap[_id].payees.push(email);
+            });
+            let response = {
+                ...event,
+                items
+            };
+            res.send(response);
         } catch (err) {
             next(err);
         }
